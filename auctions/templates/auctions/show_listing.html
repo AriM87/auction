@@ -1,0 +1,61 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+{% if listing.closed %}
+<div>Sorry, this item is no longer available.</div>
+{% endif %}
+
+<h1>{{ auction.title }}</h1>
+    <ul>
+      {% if ended %}
+      <div><b>This auction has ended</b></div>
+      {% endif %}
+      <form action="{% url 'watchlist' auction.pk %}" method="POST">
+      {% csrf_token %}
+      {% if watched %}
+      <button type="submit" name="listing_id" value="{{auction.id}}"
+      class="btn btn-danger btn-sm">Remove From Watchlist</button>
+      {% else %}
+      <button type="submit" name="listing_id" value="{{auction.id}}"
+      class="btn btn-primary btn-sm">Add to Watchlist</button>
+      {% endif %}
+      </form>
+  </br>
+      <li>Description: {{ auction.content}}</li>
+      <li>{% if auction.image != None and list.image != '' %}
+      <img src= "{{ auction.image }}" width="200" height="180">
+      {% else %} No Image Uploaded {% endif %}</li>
+
+      <li>Category: {{ auction.category}}</li>
+      
+      <li> {% if highest_bid %}
+           Current Bid:{{ highest_bid|floatformat:2 }}
+           {% else %}
+           Starting Bid:{{ highest_bid|floatformat:2 }}
+           {% endif %}</li>
+      {% if request.user.is_authenticated and not ended %}
+      <form method="POST" action="{% url 'new-bid' auction.id %}">
+      {% csrf_token %}
+      <div class="form-group">
+      <li>{{ bid.bid }}<input class="btn btn-primary" type="submit" value="Place Bid" />
+        {% if messages %}
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+        {% endif %}
+      </li>
+      </div>
+      </form>
+      {% else %} <li> This is your own listing,
+      you can not bid against your listing, see other listings.</li>
+      {% endif %}
+      <form method="post">
+      {% csrf_token %} {{ form.as_p }}
+      <input type="Submit" value="Save"/>
+      </form>
+      {% for user_comments in comments  %}
+      <li>Comments: {{ user_comments.comment}}</li>
+      {% endfor %}
+      {% endblock %}
+    </ul> 
