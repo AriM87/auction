@@ -2,54 +2,72 @@
 
 {% block body %}
 
-{% if listing.closed %}
+{% comment %} {% if listing.closed %}
 <div>Sorry, this item is no longer available.</div>
-{% endif %}
+{% endif %} {% endcomment %}
 
 <h1>{{ auction.title }}</h1>
-    <ul>
-      {% if ended %}
-      <div><b>This auction has ended</b></div>
-      {% endif %}
-      <form action="{% url 'watchlist' auction.pk %}" method="POST">
-      {% csrf_token %}
-      {% if watched %}
-      <button type="submit" name="listing_id" value="{{auction.id}}"
-      class="btn btn-danger btn-sm">Remove From Watchlist</button>
-      {% else %}
-      <button type="submit" name="listing_id" value="{{auction.id}}"
-      class="btn btn-primary btn-sm">Add to Watchlist</button>
-      {% endif %}
-      </form>
-  </br>
-      <li>Description: {{ auction.content}}</li>
-      <li>{% if auction.image != None and list.image != '' %}
-      <img src= "{{ auction.image }}" width="200" height="180">
-      {% else %} No Image Uploaded {% endif %}</li>
-
-      <li>Category: {{ auction.category}}</li>
-      
-      <li> {% if highest_bid %}
-           Current Bid:{{ highest_bid|floatformat:2 }}
-           {% else %}
-           Starting Bid:{{ highest_bid|floatformat:2 }}
-           {% endif %}</li>
-      {% if request.user.is_authenticated and not ended %}
+<ul>
+     {% comment %} {% if ended %}
+     <div><b>This auction has ended</b></div>
+     {% endif %} {% endcomment %}
+     <form action="{% url 'watchlist' auction.pk %}" method="POST">
+          {% csrf_token %}
+          {% if watched %}
+          <button type="submit" name="listing_id" value="{{auction.id}}"
+          class="btn btn-danger btn-sm">Remove From Watchlist</button>
+          {% else %}
+          <button type="submit" name="listing_id" value="{{auction.id}}"
+          class="btn btn-primary btn-sm">Add to Watchlist</button>
+          {% endif %}
+     </form>
+</br>
+<li>Description: {{ auction.content}}</li>
+<li>{% if auction.image != None and list.image != '' %}
+     <img src= "{{ auction.image }}" width="200" height="180">
+     {% else %} No Image Uploaded {% endif %}</li>
+     
+     <li>Category: {{ auction.category}}</li>
+{% comment %} I am handlign bids here: {% endcomment %}
+     <li> {% if highest_bid %}
+          Current Bid:{{ highest_bid|floatformat:2 }}
+          {% else %}
+          Starting Bid:{{ highest_bid|floatformat:2 }}
+          {% endif %}</li>
+      {% if request.user.is_authenticated %}
       <form method="POST" action="{% url 'new-bid' auction.id %}">
       {% csrf_token %}
       <div class="form-group">
-      <li>{{ bid.bid }}<input class="btn btn-primary" type="submit" value="Place Bid" />
+      {{ bid.bid }}<input class="btn btn-primary" type="submit" value="Place Bid"/>
         {% if messages %}
         {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
         {{ message }}
+        {% endif %}
         {% endfor %}
         {% endif %}
-      </li>
       </div>
       </form>
-      {% else %} <li> This is your own listing,
-      you can not bid against your listing, see other listings.</li>
-      {% endif %}
+      {% comment %} {% else %} <li> This is your own listing,
+      you can not bid against your listing, see other listings.</li> {% endcomment %}
+     {% endif %}
+
+{% comment %} I am handling closing bid here: {% endcomment %}
+     {% if auction.close == False %}
+     <form method="POST" action= "{% url 'close-listing' auction.id %}">
+       {% csrf_token %}
+       <input class="btn btn-danger" type="submit" value="Close My Auction"/>
+       {% if messages %}
+       {% for message in messages %}
+       {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        {{ message }}
+        {% endif %}
+       {% endfor %}
+       {% endif %}  
+     </form>
+     {% endif %}
+     
+{% comment %} I am handling comments here: {% endcomment %}
       <form method="post">
       {% csrf_token %} {{ form.as_p }}
       <input type="Submit" value="Save"/>
@@ -57,5 +75,8 @@
       {% for user_comments in comments  %}
       <li>Comments: {{ user_comments.comment}}</li>
       {% endfor %}
+      
       {% endblock %}
-    </ul> 
+</ul>
+
+
