@@ -10,10 +10,10 @@
 
     <form action="{% url 'login' %}" method="post">
         {% csrf_token %}
-         <!-- Email input -->
+
         <div class="form-outline mb-4">
-            <input autofocus id="usrnm" class="form-control" type="email" name="username" placeholder="Username">
-            <label class="form-label" for="usrnm">Email address</label>
+            <input autofocus id="usrnm" class="form-control" type="text" name="username" placeholder="Username">
+            <label class="form-label" for="usrnm">User Name</label>
         </div>
         <!-- Password input -->
          <div class="form-outline mb-4">

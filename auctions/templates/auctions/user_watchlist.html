@@ -1,8 +1,18 @@
 {% extends 'auctions/layout.html' %}
 
 {% block body %}
+<div class="container">
   <h1>Watchlist</h1>
   {% for item in watchlist %}
-  <strong> <a href="{% url 'show-listing' item.pk %}">Item: {{ item }}</a></strong>
+  <div class="card" style="width: 18rem;">
+  <img src="{{item.image }}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{ item.title }}</h5>
+    <p class="card-text">Description: {{ item.content }}</p>
+    <a href="{% url 'show-listing' item.pk %}"><button type="button" class="btn btn-primary">Show the item</button></a>
+
+  </div>
+</div>
+
 {% endfor %}
 {% endblock %}
