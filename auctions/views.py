@@ -1,8 +1,7 @@
-from decimal import Decimal
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 import pkg_resources
 
@@ -12,7 +11,7 @@ from .forms import AuctionForm, CommentForm, BidForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
 from django.contrib import messages
-
+from decimal import Decimal
 
 def index(request):
     active_listings = Auction.objects.all
@@ -146,22 +145,16 @@ def new_bid(request, pk):
             new_bid = Bid(user=user, auction=auction, bid=bid)
             new_bid.save()
         else:
-            messages.error(request, 'Your bid needs to be higher than current bid!') 
+            messages.warning(request, 'Your bid needs to be higher than current bid!') 
     return HttpResponseRedirect(reverse('show-listing', kwargs={'pk': pk}))    
 
-#  if request.method =='POST':
-#      bid = BidForm(request.POST)
-#      if bid.is_valid():
-#             user = request.user
-#             auction = Auction.objects.get(id=pk)
-#             new_bid = bid.save(commit=False)
-#             current_bids = Bid.objects.filter(auction=auction)
-#             is_highest_bid = all(new_bid.bid > i.bid for i in current_bids)
-#             is_valid_first_bid = new_bid.bid >= auction.start_bid
-#             if is_highest_bid and is_valid_first_bid:
-#                 new_bid.auction = auction
-#                 new_bid.user = user
-#                 new_bid.save()
-#                 return HttpResponseRedirect(reverse('show-listing', kwargs={'pk': pk}))
-
+def close_listing(request, pk):
+    auction = Auction.objects.get(id=pk)
+    if request.user == auction.user:
+        auction.close = True
+        auction.save()
+    else:
+        messages.error(request, 'This is not your listing, you can not end bidding') 
+    return HttpResponseRedirect(reverse('show-listing', kwargs={'pk': pk} ))
+    
     

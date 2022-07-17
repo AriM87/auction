@@ -12,10 +12,10 @@ class Auction(models.Model):
     title = models.CharField(max_length=64)
     content = models.TextField(max_length=1000)
     start_bid = models.DecimalField(decimal_places=2, max_digits=10)
-    image = models.URLField(blank=True)
+    image = models.URLField(blank=True, max_length=5000)
     category = models.CharField(max_length=200, blank=True, default="None")
-    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="seller", blank=True, null=True)
-    closed = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="seller", blank=True, null=True)
+    close = models.BooleanField(default=False)
     watchlist = models.ManyToManyField(User, related_name="watchlist")
        
     def __str__(self):
@@ -39,4 +39,9 @@ class Comment(models.Model):
     def __str__(self):
         return self.comment
 
+# class Person(models.Model):
+#     person = models.CharField(max_length=60)
+#     category = models.ManyToManyField('Category', blank=True, null=True)
 
+#     def __str__(self):
+#         return self.person
