@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-
+<div class="container">
     <h2>Register</h2>
 
     {% if message %}
@@ -10,21 +10,26 @@
 
     <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+
+        <div class="form-outline mb-4">
+            <input autofocus id="usrnm" class="form-control" type="text" name="username" placeholder="Username">
+            <label class="form-label" for="usrnm">User Name</label>
         </div>
-        <div class="form-group">
-            <input class="form-control" type="email" name="email" placeholder="Email Address">
+        <div class="form-outline mb-4">
+            <input autofocus id="email" class="form-control"  type="email" name="email" placeholder="Email Address">
+            <label class="form-label" for="email">User Name</label>
         </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
+         <div class="form-outline mb-4">
+            <input id="pswd" class="form-control" type="password" name="password" placeholder="Password">
+             <label class="form-label" for="pswd">Password</label>
         </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
+                 <div class="form-outline mb-4">
+            <input id="cnfpswd" class="form-control" type="password"name="confirmation" placeholder="Confirm Password">
+             <label class="form-label" for="cnfpswd">Password</label>
         </div>
         <input class="btn btn-primary" type="submit" value="Register">
     </form>
 
     Already have an account? <a href="{% url 'login' %}">Log In here.</a>
-
+</div>
 {% endblock %}
