@@ -28,7 +28,7 @@
      {% else %} No Image Uploaded {% endif %}</li>
      
      <li>Category: {{ auction.category}}</li>
-     
+{% comment %} I am handlign bids here: {% endcomment %}
      <li> {% if highest_bid %}
           Current Bid:{{ highest_bid|floatformat:2 }}
           {% else %}
@@ -38,30 +38,36 @@
       <form method="POST" action="{% url 'new-bid' auction.id %}">
       {% csrf_token %}
       <div class="form-group">
-      <li>{{ bid.bid }}<input class="btn btn-primary" type="submit" value="Place Bid"/>
+      {{ bid.bid }}<input class="btn btn-primary" type="submit" value="Place Bid"/>
         {% if messages %}
         {% for message in messages %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
         {{ message }}
+        {% endif %}
         {% endfor %}
         {% endif %}
-      </li>
       </div>
       </form>
       {% comment %} {% else %} <li> This is your own listing,
       you can not bid against your listing, see other listings.</li> {% endcomment %}
      {% endif %}
+
+{% comment %} I am handling closing bid here: {% endcomment %}
      {% if auction.close == False %}
      <form method="POST" action= "{% url 'close-listing' auction.id %}">
        {% csrf_token %}
        <input class="btn btn-danger" type="submit" value="Close My Auction"/>
        {% if messages %}
        {% for message in messages %}
-       {{ message }}
+       {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        {{ message }}
+        {% endif %}
        {% endfor %}
        {% endif %}  
      </form>
      {% endif %}
      
+{% comment %} I am handling comments here: {% endcomment %}
       <form method="post">
       {% csrf_token %} {{ form.as_p }}
       <input type="Submit" value="Save"/>

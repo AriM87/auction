@@ -154,7 +154,7 @@ def close_listing(request, pk):
         auction.close = True
         auction.save()
     else:
-        messages.error(request, 'This is not your listing, you can not end bidding') 
+        messages.error(request, 'This is not your listing, you can not end bidding, FUCK U Izi') 
     return HttpResponseRedirect(reverse('show-listing', kwargs={'pk': pk} ))
     
     
